@@ -68,7 +68,13 @@ class VerificationToken(MethodView):
 
 def export_routes(_app):
     _app.add_url_rule(
+        '/users/verify/<string:token>',
+        view_func=VerificationToken.as_view('api_v1_users_get_verification'),
+        methods=['GET']
+    )
+
+    _app.add_url_rule(
         '/users/verify/',
         view_func=VerificationToken.as_view('api_v1_users_verification'),
-        methods=['POST', 'PUT', 'GET']
+        methods=['POST', 'PUT']
     )
