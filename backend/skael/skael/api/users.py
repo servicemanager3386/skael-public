@@ -12,12 +12,12 @@ from skael.DAOs.user_dao import UserDAO
 from skael.facades.user_facade import UserFacade
 from skael.utils.marshalizers import UserMarshal
 from skael.utils.exceptions import EndpointException
-
+from skael.utils.helper import generate_random_pwd
 
 class Users(MethodView):
     """Houses CRUD operations for user management."""
 
-    @jwt_required()
+    @jwt_required
     def get(self, user_id):
         user_info = UserDAO().get(user_id)
 
@@ -48,10 +48,12 @@ class Users(MethodView):
     def post(self):
         arg_fields = {
             'email': String(required=True),
-            'plaintext_password': String(required=True),
             'username': String(required=True)
         }
         args = parser.parse(arg_fields)
+
+        pwd = generate_random_pwd()
+        args['plaintext_password'] = pwd
 
         user_info = UserFacade().create_new_user(**args)
 
@@ -75,7 +77,7 @@ class Users(MethodView):
 
         return jsonify(UserMarshal().dump(user_info).data)
 
-    @jwt_required()
+    @jwt_required
     def put(self, user_id):
         arg_fields = {
             'email': String(),

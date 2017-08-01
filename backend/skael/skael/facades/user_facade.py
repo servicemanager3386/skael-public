@@ -11,7 +11,6 @@ from skael.utils.exceptions import (
     FacadeException
 )
 
-
 class UserFacade(object):
     """
     Handles user operations which require multiple components.
@@ -30,6 +29,7 @@ class UserFacade(object):
         :return: The newly created user.
         """
         try:
+
             new_user = UserDAO().create_new_user(
                 email,
                 plaintext_password,
@@ -44,7 +44,7 @@ class UserFacade(object):
                     '{0}/users/verify/{1}'.format(
                         current_app.config['HOST'],
                         new_user.verify_token,
-                    )
+                    ), plaintext_password
                 )
             )
 
