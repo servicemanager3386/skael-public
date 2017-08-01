@@ -20,7 +20,7 @@ class VerificationToken(MethodView):
         Validate a user by providing the correct token.
         """
         arg_fields = {
-            'token': String(required=True),
+            'token': String(required=True)
         }
         args = parser.parse(arg_fields)
 
@@ -29,6 +29,21 @@ class VerificationToken(MethodView):
         logging.info(
             'Successfully validated token {0} for user {1}.'.format(
                 args['token'],
+                validated_user,
+            )
+        )
+
+        return jsonify(UserMarshal().dump(validated_user).data)
+
+    def get(self, token):
+        """
+        Validate a user by providing the correct token.
+        """
+        validated_user = UserDAO().verify_token(token)
+
+        logging.info(
+            'Successfully validated token {0} for user {1}.'.format(
+                token,
                 validated_user,
             )
         )
@@ -53,7 +68,7 @@ class VerificationToken(MethodView):
 
 def export_routes(_app):
     _app.add_url_rule(
-        '/users/verify',
+        '/users/verify/',
         view_func=VerificationToken.as_view('api_v1_users_verification'),
-        methods=['POST', 'PUT']
+        methods=['POST', 'PUT', 'GET']
     )
